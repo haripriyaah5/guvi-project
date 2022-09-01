@@ -1,0 +1,95 @@
+<?php 
+	session_start();
+	include("connection.php");
+	include("function.php");
+
+	if($_SERVER['REQUEST_METHOD']=="POST") {
+		$user_name=$_POST['user_name'];
+		$password=$_POST['password'];
+
+		if(!empty($user_name) && !empty($password) && !is_numeric($user_name)) {
+			
+
+			$query = "select * from users where user_name = '$user_name' limit 1";
+
+			$result = mysqli_query($con, $query);
+
+			if($result) {
+				if($result && mysqli_num_rows($result) >0) {
+					$user_data=mysqli_fetch_assoc($result);
+					
+					if($user_data['password'] === $password) {
+						$_SESSION['user_id']=$user_data['user_id'];
+						header("Location: index.php");
+						die;
+
+					}
+				}
+			}
+			echo "wrong username or password";
+		}
+		else {
+			echo "wrong username or password";
+		}
+
+	}
+?>
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>UserLogin</title>
+</head>
+<body>
+	<style type="text/css">
+		body{
+			background-image: url("image.jpg");
+			background-size: cover;
+			background-repeat: no-repeat;
+		}
+		#text{
+
+		height: 25px;
+		border-radius: 5px;
+		padding: 4px;
+		border: solid thin #aaa;
+		width: 100%;
+	}
+
+	#button{
+
+		padding: 10px;
+		width: 100px;
+		color: whitesmoke;
+		background-color: lightblue;
+		border: none;
+	}
+
+	#box{
+
+		background-color: transparent;
+		margin: auto;
+		width: 300px;
+		padding: 20px;
+	}
+	#cls{
+		color: white;
+	}
+	</style>
+
+	<div id="box">
+		<form method="post">
+
+			<div style="font-size: 20px; margin: 1-0px;">Login</div>
+
+			<input type="text" id="text" name="user_name" placeholder="enter usernam" required autofocus><br><br>
+			<input type="password" id="text" name="password" placeholder="enter password" maxlength="10" requires><br><br>
+
+			<input id="button"  type="submit" value="Login"> <br><br>
+			<p id="cls">don't have an account signup<a href="signup.php">rightnow</a></p><br><br>
+		</form>
+	</div>
+
+</body>
+</html>
